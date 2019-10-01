@@ -4,10 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var passport = require('passport')
 
 
 var app = express();
+
 
 
 app.use(logger('dev'));
@@ -17,8 +18,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+app.use(passport.initialize());
+require('./passport.js')
 
 require('./admin.js')(app)
+require('./routes')(app)
+
+
+
+
 
 
 
@@ -35,6 +43,7 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  console.error(err)
   // render the error page
   res.status(err.status || 500);
   res.end();

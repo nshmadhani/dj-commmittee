@@ -2,6 +2,8 @@ var sequelize = require('./services/models').sequelize;
 module.exports = app => {
 
     const AdminBro = require("admin-bro");
+
+
     const AdminBroExpress = require("admin-bro-expressjs");
     const AdminBroSequelize = require("admin-bro-sequelizejs");
 

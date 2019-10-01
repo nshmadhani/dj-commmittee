@@ -1,6 +1,9 @@
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize("dj_com", "root", "", {
-  host: "localhost",
+const bcrypt = require('bcrypt')
+
+
+const sequelize = new Sequelize("SBhCs8G7ai", "SBhCs8G7ai", "SiHSUKO7ku", {
+  host: "remotemysql.com",
   dialect: "mysql"
 });
 var Department = sequelize.define("department", {
@@ -9,42 +12,37 @@ var Department = sequelize.define("department", {
 var User = sequelize.define("user", {
   sap: {
     type: Sequelize.STRING,
-    primaryKey: true,
+    allowNull: false,
+    unique: true,
     validate: { isInt: true, len: [11, 11] }
   },
   name: Sequelize.STRING,
   email: { type: Sequelize.STRING, validate: { isEmail: true } },
   type: { type: Sequelize.INTEGER },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
+  }
 });
-User.belongsTo(Department);
-Department.hasMany(User);
+User.belongsTo(Department, {as: 'department'});
+User.addHook('beforeCreate', (user, options) => {
+  return bcrypt.hash(user.password, 10).then(function(hash) {
+    user.password = hash;
+    return user;
+  });
+});
+
+
+
+
 
 var Committee = sequelize.define("committee", {
-  handler_account_teacher: {
-    type: Sequelize.STRING,
-    references: {
-      model: User,
-      key: "sap"
-    }
-  },
-  handler_account_student: {
-    type: Sequelize.STRING,
-    references: {
-      model: User,
-      key: "sap"
-    }
-  },
-  dept: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Department,
-      key: "id"
-    }
-  },
   description: Sequelize.STRING
 });
-Committee.belongsTo(Department);
-Department.hasMany(Committee);
+Committee.belongsTo(Department, {as: 'department'});
+User.hasOne(Committee, {as: 'teacher_handler'});
+User.hasOne(Committee, {as: 'student_handler'});
+
 
 
 
@@ -56,20 +54,12 @@ var Room = sequelize.define("room", {
 Room.belongsTo(Department);
 
 var Event = sequelize.define("event", {
-  committee: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Committee,
-      key: "id"
-    }
-  },
   name: Sequelize.STRING,
   desc: Sequelize.STRING,
   start_date: { type: Sequelize.DATE },
   end_date: { type: Sequelize.DATE }
 });
 Event.belongsTo(Committee);
-Committee.hasMany(Event);
 Event.hasMany(Room);
 
 
