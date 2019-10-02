@@ -5,13 +5,15 @@ const jwt      = require('jsonwebtoken');
 const passport = require('passport');
 
 
-const {User} = require('../services/models')
+const {User,Department} = require('../services/models')
+
+const EmailHandler = require('../services/email')
 
 router.post('/login', function (req, res, next) {
 
     passport.authenticate('local', {session: false}, (err, user, info) => {
         console.log(err);
-        if (err || !user) {
+        if (err || !user || !user.verified) {
             return res.status(400).json({
                 message: info ? info.message : 'Login failed',
                 user   : user
@@ -30,18 +32,24 @@ router.post('/login', function (req, res, next) {
         });
     }) (req, res,next);
 });
+
+
 router.post('/signup', function (req, res, next) {
 
 
-    //TODO: Department Check
     //TODO: Valiudations foe Requires
-    //{ name,email,password,sap,department }
+    //{ name,email,password,sap }
+
+
+
 
     var userBody = req.body;
     userBody.createdAt =  new Date();
     userBody.updatedAt =  new Date();
     userBody.type =  0;
-    
+
+
+
     User.findOne({
         where: {
             sap:userBody.sap
@@ -53,8 +61,32 @@ router.post('/signup', function (req, res, next) {
         } else {
             user = User.build(userBody);
             user.save()
+                .then(() => EmailHandler.sendOtp(user))
                 .then(() => res.status(200).end())
                 .catch(console.error)
+        }
+    })
+});
+
+router.post('/verify', function (req, res, next) {
+    //TODO: Valiudations json Requires
+    var otpBody = req.body;
+    
+    User.findOne({
+        where: {
+            sap:otpBody.sap
+        }
+    }).then((user) => {
+        if(!user) {
+            res.status(502).end()
+        } else {
+            return EmailHandler.verifyOtp(otpBody.otp,user)
+        }
+    }).then((rs) => {
+        if(rs){
+            res.status(200).end()
+        } else {
+            res.status(400).end()
         }
     })
 });
