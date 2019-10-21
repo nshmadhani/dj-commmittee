@@ -49,14 +49,7 @@ var Committee = sequelize.define("committee", {
   logo:Sequelize.STRING,
   
 });
-
-
-
-
-
-Committee.belongsTo(Department, {as: 'department'});
 User.hasOne(Committee, {as: 'student_handler'});
-
 
 
 
@@ -69,17 +62,25 @@ Room.belongsTo(Department);
 
 var Event = sequelize.define("event", {
   name: Sequelize.STRING,
-  desc: Sequelize.STRING,
+  type: Sequelize.STRING,
   start_date: { type: Sequelize.DATE },
   end_date: { type: Sequelize.DATE }
 });
-Event.belongsTo(Committee);
+
+Committee.hasMany(Event);
 Event.hasMany(Room);
+
 
 var OTP = sequelize.define("otp", {
   otp: Sequelize.STRING,
   sap: Sequelize.STRING,
 });
+
+var RegisterEvent = sequelize.define("registerevent", {
+  userID:  Sequelize.STRING,
+  eventID: Sequelize.INTEGER
+});
+
 
 
 
@@ -96,6 +97,7 @@ Department.sync()
   .then(Event.sync())
   .then(Room.sync())
   .then(OTP.sync())
+  .then(RegisterEvent.sync())
 
 
 
@@ -106,5 +108,6 @@ module.exports = {
   Committee,
   Department,
   Event,
-  OTP
+  OTP,
+  RegisterEvent
 }

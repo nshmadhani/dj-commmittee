@@ -10,10 +10,9 @@ var storage = multer.diskStorage({
       cb(null, './uploads/')
     },
     filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now())
+      cb(null, file.originalname)
     }
-  })
-  
+})  
 var upload = multer({ storage: storage })
 
 router.get('/list', function(req, res, next) {
@@ -27,20 +26,19 @@ router.get('/list', function(req, res, next) {
 
 });
 
-var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 8 }])
+var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }])
 
 router.post('/create', cpUpload,function(req, res, next) {
     
-    console.log(req.files)
     body = req.body
     body.image = req.files.image[0].originalname;
     body.logo = req.files.logo[0].originalname;
-    body.teacher_handler = req.user.id
+    body.studentHandlerId = req.user.id
     com = Committee.build(body);
     com.save()
         .then(() => res.status(200).end())
         .catch((e) => {console.log(e);res.status(400).end()})
-
+    
 });
 
 
