@@ -63,9 +63,9 @@ router.post('/signup', function (req, res, next) {
             user.save()
                 .then(() => EmailHandler.sendOtp(user))
                 .then(() => res.status(200).end())
-                .catch(console.error)
+                .catch(() => res.status(400).end())
         }
-    })
+    }).catch(() => res.status(400).end())
 });
 
 router.post('/verify', function (req, res, next) {
