@@ -28,7 +28,7 @@ router.get('/list', function(req, res, next) {
 
 var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }])
 
-router.post('/create',passport.authenticate('jwt'), cpUpload,function(req, res, next) {
+router.post('/create', cpUpload,function(req, res, next) {
     
     body = req.body
     body.image = req.files.image[0].originalname;
