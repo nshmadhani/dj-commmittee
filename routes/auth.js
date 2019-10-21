@@ -61,34 +61,33 @@ router.post('/signup', function (req, res, next) {
         } else {
             user = User.build(userBody);
             user.save()
-                .then(() => EmailHandler.sendOtp(user))
                 .then(() => res.status(200).end())
                 .catch(() => res.status(400).end())
         }
     }).catch(() => res.status(400).end())
 });
 
-router.post('/verify', function (req, res, next) {
-    //TODO: Valiudations json Requires
-    var otpBody = req.body;
+// router.post('/verify', function (req, res, next) {
+//     //TODO: Valiudations json Requires
+//     var otpBody = req.body;
     
-    User.findOne({
-        where: {
-            sap:otpBody.sap
-        }
-    }).then((user) => {
-        if(!user) {
-            res.status(502).end()
-        } else {
-            return EmailHandler.verifyOtp(otpBody.otp,user)
-        }
-    }).then((rs) => {
-        if(rs){
-            res.status(200).end()
-        } else {
-            res.status(400).end()
-        }
-    })
-});
+//     User.findOne({
+//         where: {
+//             sap:otpBody.sap
+//         }
+//     }).then((user) => {
+//         if(!user) {
+//             res.status(502).end()
+//         } else {
+//             return EmailHandler.verifyOtp(otpBody.otp,user)
+//         }
+//     }).then((rs) => {
+//         if(rs){
+//             res.status(200).end()
+//         } else {
+//             res.status(400).end()
+//         }
+//     })
+// });
 
 module.exports = router;
