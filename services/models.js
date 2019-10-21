@@ -27,7 +27,7 @@ var User = sequelize.define("user", {
   verified:  { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
 });
 
-//User.belongsTo(Department, {as: 'department'});
+User.belongsTo(Department, {as: 'department'});
 
 
 User.addHook('beforeCreate', (user, options) => {
