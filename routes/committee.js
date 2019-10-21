@@ -27,12 +27,15 @@ router.get('/list', function(req, res, next) {
 
 });
 
-router.post('/create', upload.single('image'),function(req, res, next) {
+var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 8 }])
+
+router.post('/create', cpUpload,function(req, res, next) {
     
-    console.log(req.file)
+    console.log(req.files)
     body = req.body
-    body.image = req.file.originalname;
-    bod.teacher_handler = req.user.id
+    body.image = req.files.image[0].originalname;
+    body.logo = req.files.logo[0].originalname;
+    body.teacher_handler = req.user.id
     com = Committee.build(body);
     com.save()
         .then(() => res.status(200).end())

@@ -45,7 +45,9 @@ var Committee = sequelize.define("committee", {
   description: Sequelize.STRING,
   name: Sequelize.STRING,
   sn:Sequelize.STRING,
-  image:Sequelize.STRING
+  image:Sequelize.STRING,
+  logo:Sequelize.STRING,
+  
 });
 
 
