@@ -44,6 +44,8 @@ User.addHook('beforeCreate', (user, options) => {
 var Committee = sequelize.define("committee", {
   description: Sequelize.STRING
 });
+
+
 Committee.belongsTo(Department, {as: 'department'});
 User.hasOne(Committee, {as: 'teacher_handler'});
 User.hasOne(Committee, {as: 'student_handler'});
