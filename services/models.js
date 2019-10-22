@@ -85,10 +85,6 @@ var RegisterEvent = sequelize.define("registerevent", {
 
 
 
-//TODO: Make Models better in terms of keys 
-//TODO: Should we keep ID as primary key , beacuse she will ask the questions 
-//TODO: host on HEroku
-
 
 
 Department.sync()
